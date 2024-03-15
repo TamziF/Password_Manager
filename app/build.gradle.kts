@@ -52,14 +52,14 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     // navigation
-    implementation ("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation ("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
 
     // retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
     // jsoup
-    implementation ("org.jsoup:jsoup:1.10.3")
+    implementation("org.jsoup:jsoup:1.10.3")
 
     // serialization
     implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0")
@@ -74,4 +74,10 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+
+    // biometric
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+
+    // gson
+    implementation ("com.google.code.gson:gson:2.8.7")
 }

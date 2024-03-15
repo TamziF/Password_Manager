@@ -9,4 +9,9 @@
     <string name="delete">Delete</string>
     <string name="request_key">fragment_result</string>
     <string name="item_id">bundle_item_id</string>
+
+    <string name="prompt_info_title">Sample App Authentication</string>
+    <string name="prompt_info_subtitle">Please login to get access</string>
+    <string name="prompt_info_description">Sample App is using Android biometric authentication</string>
+    <string name="prompt_info_use_app_password">Use app password</string>
 </resources>
