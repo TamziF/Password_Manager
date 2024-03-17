@@ -126,11 +126,11 @@ class PasswordEditViewModel(
     }
 
     private fun encryptPassword() {
-        //_passwordItem.value.password = CryptoManager.encrypt(_passwordItem.value.password)
+        _passwordItem.value.password = CryptoManager.encrypt(_passwordItem.value.password)
     }
 
     private fun decryptPassword() {
-        //_passwordItem.value.password = CryptoManager.decrypt(_passwordItem.value.password)
+        _passwordItem.value.password = CryptoManager.decrypt(_passwordItem.value.password)
     }
 
     private var job: Job? = null
