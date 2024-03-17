@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import com.example.passwordmanager.PasswordManagerApp
@@ -24,10 +25,12 @@ class PasswordEditFragment : Fragment() {
     private lateinit var fragmentComponent: PasswordEditFragmentComponent
     private var fragmentViewComponent: PasswordEditFragmentViewComponent? = null
 
-    private val viewModel: PasswordEditViewModel by viewModels { applicationComponent.viewModelFactory }
+    private val viewModel: PasswordEditViewModel by activityViewModels { applicationComponent.viewModelFactory }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
 
         fragmentComponent = PasswordEditFragmentComponent(
             viewModel = viewModel,
@@ -49,7 +52,8 @@ class PasswordEditFragment : Fragment() {
 
         fragmentViewComponent = PasswordEditFragmentViewComponent(
             binding = binding,
-            fragmentComponent = fragmentComponent
+            fragmentComponent = fragmentComponent,
+            imageLoader = applicationComponent.imageLoader
         ).apply {
             viewController.bindViews()
         }
@@ -60,5 +64,10 @@ class PasswordEditFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         fragmentViewComponent = null
+    }
+
+    override fun onDestroy() {
+        viewModel.clearData()
+        super.onDestroy()
     }
 }

@@ -5,12 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.biometric.BiometricManager
-import androidx.biometric.BiometricPrompt
 import androidx.fragment.app.viewModels
 import com.example.passwordmanager.PasswordManagerApp
 import com.example.passwordmanager.databinding.FragmentPasswordsListBinding
-import com.example.passwordmanager.fingerScan.CryptographyManager
 import com.example.passwordmanager.ioc.ApplicationComponent
 import com.example.passwordmanager.ioc.passwordsList.PasswordsListFragmentComponent
 import com.example.passwordmanager.ioc.passwordsList.PasswordsListFragmentViewComponent

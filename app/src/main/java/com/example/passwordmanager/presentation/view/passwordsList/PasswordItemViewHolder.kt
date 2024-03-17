@@ -1,5 +1,6 @@
 package com.example.passwordmanager.presentation.view.passwordsList
 
+import android.util.Log
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.findNavController
@@ -16,8 +17,10 @@ class PasswordItemViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(item: PasswordItem) {
-        //TODO(прописать установку из локального хранилища)
-        binding.image.load(item.imageUrl)
+        binding.image.load(item.imageUrl) {
+            Log.d("IMAGE_CACHE", "${item.imageUrl} vh")
+            error(R.drawable.error_image)
+        }
 
         binding.login.text = item.login
 

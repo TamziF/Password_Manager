@@ -11,7 +11,7 @@ import com.example.passwordmanager.data.repositories.NetworkRepository
 class ApplicationComponent(context: Context) {
     private val network: Network = Network()
     private val database: DataBaseSource = DataBaseSource(context)
-    private val imageLoader = ImageLoader(context).imageLoader
+    val imageLoader = ImageLoader(context).imageLoader
 
     private val networkRepository: NetworkRepository = NetworkRepository(network.api)
     private val databaseRepository: DatabaseRepository = DatabaseRepository(database.dao)

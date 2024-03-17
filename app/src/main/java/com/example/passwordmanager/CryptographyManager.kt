@@ -1,4 +1,4 @@
-package com.example.passwordmanager.fingerScan
+package com.example.passwordmanager
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
