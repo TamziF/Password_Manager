@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
 import com.example.passwordmanager.PasswordManagerApp
 import com.example.passwordmanager.R
 import com.example.passwordmanager.databinding.FragmentPasswordEditBinding
@@ -37,7 +36,7 @@ class PasswordEditFragment : Fragment() {
         )
 
         setFragmentResultListener(R.string.request_key.toString()) { _, bundle ->
-            bundle.getInt(R.string.item_id.toString())?.let { viewModel.setItem(it) }
+            bundle.getInt(R.string.item_id.toString()).let { viewModel.setItem(it) }
         }
 
         super.onCreate(savedInstanceState)

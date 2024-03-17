@@ -25,7 +25,4 @@ interface Dao {
 
     @Query("SELECT * FROM Passwords WHERE id = :id")
     suspend fun getItem(id: Int): PasswordItem
-
-    @Query("SELECT * FROM passwords LIMIT (10) OFFSET (:decade * 10)")
-    suspend fun getDecadeItems(decade: Int): List<PasswordItem>
 }

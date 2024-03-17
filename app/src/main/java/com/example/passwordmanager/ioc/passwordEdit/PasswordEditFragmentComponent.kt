@@ -6,5 +6,4 @@ import com.example.passwordmanager.presentation.view.passwordEdit.PasswordEditFr
 class PasswordEditFragmentComponent(
     val viewModel: PasswordEditViewModel,
     val fragment: PasswordEditFragment
-) {
-}
+)

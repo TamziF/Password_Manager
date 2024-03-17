@@ -8,6 +8,4 @@ class PasswordsListFragmentComponent(
     val viewModel: PasswordsListViewModel,
     val fragment: PasswordsListFragment,
     val context: Context
-) {
-
-}
+)

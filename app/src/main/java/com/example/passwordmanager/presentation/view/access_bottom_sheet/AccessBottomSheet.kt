@@ -1,4 +1,4 @@
-package com.example.passwordmanager
+package com.example.passwordmanager.presentation.view.access_bottom_sheet
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -11,7 +11,9 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
+import com.example.passwordmanager.CryptoManager
+import com.example.passwordmanager.PasswordManagerApp
+import com.example.passwordmanager.R
 import com.example.passwordmanager.databinding.FragmentAccessBinding
 import com.example.passwordmanager.presentation.stateholders.PasswordEditViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -98,18 +100,20 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
                     viewModel.setAuth(true)
-                    onDestroy()
                     Toast.makeText(requireContext(), "Succeeded", Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onAuthenticationFailed() {
                     super.onAuthenticationFailed()
                     viewModel.setAuth(false)
-                    onDestroy()
                     Toast.makeText(requireContext(), "Fail", Toast.LENGTH_SHORT).show()
                 }
             })
 
+        bindPromptInfo()
+    }
+
+    private fun bindPromptInfo() {
         promptInfo = BiometricPrompt.PromptInfo.Builder()
             .setTitle("Biometric login for password watching")
             .setSubtitle("Log in using your biometric credential")
@@ -122,12 +126,11 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun firstAppEnterScenario() {
-        binding.useBiometricsTv.visibility = View.INVISIBLE
-        binding.fingerprintIcon.visibility = View.INVISIBLE
-        binding.checkPasswordButton.text = "Create master-password"
+        hideBiometry()
+        binding.checkPasswordButton.text = getString(R.string.create_master_password)
 
         binding.checkPasswordButton.setOnClickListener {
-            if (binding.masterPassword.text?.isNotEmpty() == true)
+            if (binding.masterPassword.text?.isNotBlank() == true)
                 setMasterPassword(binding.masterPassword.text.toString())
         }
     }
@@ -135,9 +138,8 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
     private fun bindFingerPrintIcon() {
         when (biometricReadinessState) {
             BiometricReadinessState.OK -> {
-                binding.fingerprintIcon.visibility = View.VISIBLE
-                binding.useBiometricsTv.visibility = View.VISIBLE
-                binding.useBiometricsTv.text = "Push to use biometrics"
+                showBiometry()
+                binding.useBiometricsTv.text = getString(R.string.push_to_use_biometrics)
 
                 binding.fingerprintIcon.setOnClickListener {
                     biometricPrompt.authenticate(promptInfo)
@@ -145,22 +147,29 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
             }
 
             BiometricReadinessState.NO_HARDWARE -> {
-                binding.fingerprintIcon.visibility = View.INVISIBLE
-                binding.useBiometricsTv.visibility = View.INVISIBLE
+                hideBiometry()
             }
 
             BiometricReadinessState.NOT_AVAILABLE -> {
-                binding.fingerprintIcon.visibility = View.VISIBLE
-                binding.useBiometricsTv.visibility = View.VISIBLE
-                binding.useBiometricsTv.text = "Finger print not available"
+                showBiometry()
+                binding.useBiometricsTv.text = getString(R.string.finger_print_not_available)
             }
 
             BiometricReadinessState.NONE_ENROLLED -> {
-                binding.fingerprintIcon.visibility = View.VISIBLE
-                binding.useBiometricsTv.visibility = View.VISIBLE
-                binding.useBiometricsTv.text = "There are no finger prints"
+                showBiometry()
+                binding.useBiometricsTv.text = getString(R.string.there_are_no_finger_prints)
             }
         }
+    }
+
+    private fun hideBiometry() {
+        binding.fingerprintIcon.visibility = View.INVISIBLE
+        binding.useBiometricsTv.visibility = View.INVISIBLE
+    }
+
+    private fun showBiometry() {
+        binding.fingerprintIcon.visibility = View.VISIBLE
+        binding.useBiometricsTv.visibility = View.VISIBLE
     }
 
     private fun bindCheckMasterPasswordButton() {
@@ -176,7 +185,7 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-    private fun getMasterPassword(): String{
+    private fun getMasterPassword(): String {
         val encryptedPassword = sharedPreferences.getString(
             getString(R.string.saved_master_password_key),
             ""
@@ -192,14 +201,6 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
                 BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> BiometricReadinessState.NO_HARDWARE
                 BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> BiometricReadinessState.NOT_AVAILABLE
                 BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> BiometricReadinessState.NONE_ENROLLED
-                // Prompts the user to create credentials that your app accepts.
-
-                /*val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
-                    putExtra(Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
-                        BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
-                }
-                private val REQUEST_CODE = 1
-                startActivityForResult(enrollIntent, REQUEST_CODE)*/
                 else -> {
                     BiometricReadinessState.NO_HARDWARE
                 }

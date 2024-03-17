@@ -1,4 +1,4 @@
-package com.example.passwordmanager.presentation.view.passwordsList
+package com.example.passwordmanager.presentation.view.passwordsList.recycler
 
 import android.util.Log
 import androidx.core.os.bundleOf
@@ -9,7 +9,8 @@ import coil.load
 import com.example.passwordmanager.R
 import com.example.passwordmanager.data.model.PasswordItem
 import com.example.passwordmanager.databinding.PasswordItemBinding
-import com.example.passwordmanager.presentation.stateholders.PasswordsListViewModel
+import com.example.passwordmanager.presentation.view.passwordsList.PasswordsListFragment
+import com.example.passwordmanager.presentation.view.passwordsList.PasswordsListFragmentDirections
 
 class PasswordItemViewHolder(
     private val binding: PasswordItemBinding,
@@ -18,13 +19,10 @@ class PasswordItemViewHolder(
 
     fun bind(item: PasswordItem) {
         binding.image.load(item.imageUrl) {
-            Log.d("IMAGE_CACHE", "${item.imageUrl} vh")
             error(R.drawable.error_image)
         }
 
         binding.login.text = item.login
-
-        Log.d("PASSWORD_ITEM_ID", item.id.toString())
 
 
 
@@ -34,7 +32,8 @@ class PasswordItemViewHolder(
                 bundleOf(R.string.item_id.toString() to item.id)
             )
 
-            val direction = PasswordsListFragmentDirections.actionPasswordsListFragmentToPasswordEditFragment()
+            val direction =
+                PasswordsListFragmentDirections.actionPasswordsListFragmentToPasswordEditFragment()
             it.findNavController().navigate(direction)
         }
     }

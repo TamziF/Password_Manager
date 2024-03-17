@@ -10,12 +10,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import coil.load
-import com.example.passwordmanager.AccessBottomSheet
+import com.example.passwordmanager.presentation.view.access_bottom_sheet.AccessBottomSheet
 import com.example.passwordmanager.R
 import com.example.passwordmanager.databinding.FragmentPasswordEditBinding
 import com.example.passwordmanager.presentation.stateholders.IconState
 import com.example.passwordmanager.presentation.stateholders.PasswordEditViewModel
 import com.example.passwordmanager.presentation.stateholders.SavingState
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -110,7 +111,7 @@ class PasswordEditFragmentViewController(
                 viewModel.isItemSet.collect { isItemSet ->
                     if (isItemSet) {
                         setFromViewModelState()
-                        this.cancel()
+                        throw CancellationException()
                     }
                 }
             }

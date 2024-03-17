@@ -10,4 +10,10 @@
     <string name="request_key">fragment_result</string>
     <string name="item_id">bundle_item_id</string>
     <string name="saved_master_password_key">master_password_key</string>
+    <string name="master_password">Master password</string>
+    <string name="check_password">Check password</string>
+    <string name="push_to_use_biometrics">Push to use biometrics</string>
+    <string name="create_master_password">Create master-password</string>
+    <string name="finger_print_not_available">Finger print not available</string>
+    <string name="there_are_no_finger_prints">There are no finger prints</string>
 </resources>

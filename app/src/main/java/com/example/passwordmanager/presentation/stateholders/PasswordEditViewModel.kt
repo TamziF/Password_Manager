@@ -30,6 +30,9 @@ interface PasswordViewModelInterface {
 
     fun setPassword(password: String)
 
+    fun clearData()
+
+    fun setAuth(isAuthorized: Boolean)
 }
 
 enum class IconState { LOADING, ERROR, DONE }
@@ -67,7 +70,7 @@ class PasswordEditViewModel(
     private val _isAuthorized: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isAuthorized: StateFlow<Boolean> = _isAuthorized
 
-    fun clearData() {
+    override fun clearData() {
         _passwordItem.value = PasswordItem("", "", "", "")
         _iconState.value = IconState.ERROR
         _saveButtonEnabled.value = false
@@ -79,7 +82,7 @@ class PasswordEditViewModel(
         _isAuthorized.value = false
     }
 
-    fun setAuth(isAuthorized: Boolean) {
+    override fun setAuth(isAuthorized: Boolean) {
         _isAuthorized.value = isAuthorized
     }
 
@@ -156,32 +159,30 @@ class PasswordEditViewModel(
         _iconState.value = IconState.LOADING
         job = viewModelScope.launch {
             delay(1000L)
-            Log.d("POCHEMUTO_PADAET", "before")
             lateinit var requestAnswer: Response<IconResponse>
             try {
                 requestAnswer = networkRepository.loadPhoto(_passwordItem.value.url)
             } catch (e: Exception) {
-                _iconState.value = IconState.ERROR
-                _passwordItem.value.imageUrl = ""
-                Log.d("POCHEMUTO_PADAET", "close")
+                errorAnswer()
                 throw CancellationException()
             }
-            Log.d("POCHEMUTO_PADAET", "after")
             if (requestAnswer.isSuccessful) {
                 if (requestAnswer.body()?.icons?.isEmpty() == true) {
-                    _passwordItem.value.imageUrl = ""
-                    _iconState.value = IconState.ERROR
+                    errorAnswer()
                 } else {
                     _passwordItem.value.imageUrl = requestAnswer.body()?.icons?.get(0)?.url
                         ?: ""
-
                     _iconState.value = IconState.DONE
                 }
             } else {
-                _iconState.value = IconState.ERROR
-                _passwordItem.value.imageUrl = ""
+                errorAnswer()
             }
         }
+    }
+
+    private fun errorAnswer() {
+        _passwordItem.value.imageUrl = ""
+        _iconState.value = IconState.ERROR
     }
 
     override fun setUrl(url: String) {
@@ -204,12 +205,12 @@ class PasswordEditViewModel(
     }
 
     private fun checkButtonsState() {
-        _deleteButtonEnabled.value = _passwordItem.value.url.isNotEmpty()
-                && _passwordItem.value.login.isNotEmpty()
-                && _passwordItem.value.password.isNotEmpty() && !isNewItem
+        _deleteButtonEnabled.value = _passwordItem.value.url.isNotBlank()
+                && _passwordItem.value.login.isNotBlank()
+                && _passwordItem.value.password.isNotBlank() && !isNewItem
 
-        _saveButtonEnabled.value = _passwordItem.value.url.isNotEmpty()
-                && _passwordItem.value.login.isNotEmpty()
-                && _passwordItem.value.password.isNotEmpty() && hasChanged
+        _saveButtonEnabled.value = _passwordItem.value.url.isNotBlank()
+                && _passwordItem.value.login.isNotBlank()
+                && _passwordItem.value.password.isNotBlank() && hasChanged
     }
 }

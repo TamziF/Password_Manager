@@ -6,7 +6,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.passwordmanager.databinding.FragmentPasswordsListBinding
 import com.example.passwordmanager.presentation.stateholders.PasswordsListViewModel
-import kotlinx.coroutines.flow.collect
+import com.example.passwordmanager.presentation.view.passwordsList.recycler.PasswordsListAdapter
 import kotlinx.coroutines.launch
 
 class PasswordsListFragmentViewController(
@@ -26,7 +26,7 @@ class PasswordsListFragmentViewController(
 
     private fun bindRecycler() {
         recyclerView.layoutManager = LinearLayoutManager(context)
-        val adapter = PasswordsListAdapter(fragment, viewModel)
+        val adapter = PasswordsListAdapter(fragment)
         recyclerView.adapter = adapter
         fragment.viewLifecycleOwner.lifecycleScope.launch {
             viewModel.passwordsList.collect { list ->

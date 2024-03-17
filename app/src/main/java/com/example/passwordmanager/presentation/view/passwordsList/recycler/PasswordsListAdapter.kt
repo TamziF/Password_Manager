@@ -1,16 +1,15 @@
-package com.example.passwordmanager.presentation.view.passwordsList
+package com.example.passwordmanager.presentation.view.passwordsList.recycler
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.passwordmanager.data.model.PasswordItem
 import com.example.passwordmanager.databinding.PasswordItemBinding
 import com.example.passwordmanager.presentation.stateholders.PasswordsListViewModel
+import com.example.passwordmanager.presentation.view.passwordsList.PasswordsListFragment
 
 class PasswordsListAdapter(
-    private val fragment: PasswordsListFragment,
-    private val viewModel: PasswordsListViewModel
+    private val fragment: PasswordsListFragment
 ): ListAdapter<PasswordItem, PasswordItemViewHolder>(
     PasswordItemDiffCallback()
 ) {
@@ -20,7 +19,6 @@ class PasswordsListAdapter(
     }
 
     override fun onBindViewHolder(holder: PasswordItemViewHolder, position: Int) {
-        //viewModel.getNewDecadeRequest(position)
         holder.bind(getItem(position))
     }
 }

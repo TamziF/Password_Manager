@@ -1,4 +1,4 @@
-package com.example.passwordmanager.presentation.view.passwordsList
+package com.example.passwordmanager.presentation.view.passwordsList.recycler
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.passwordmanager.data.model.PasswordItem

@@ -40,8 +40,4 @@ class DatabaseRepository(
     override suspend fun getItem(id: Int): PasswordItem {
         return dao.getItem(id)
     }
-
-    suspend fun getDecadeItems(decade: Int): List<PasswordItem> {
-        return dao.getDecadeItems(decade)
-    }
 }

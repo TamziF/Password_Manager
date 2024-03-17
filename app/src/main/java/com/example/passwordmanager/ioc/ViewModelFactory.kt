@@ -15,7 +15,7 @@ class ViewModelFactory(
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when (modelClass) {
         PasswordsListViewModel::class.java -> PasswordsListViewModel(databaseRepository)
-        PasswordEditViewModel::class.java -> { Log.v("GES-21", "VIEW"); PasswordEditViewModel(networkRepository, databaseRepository) }
+        PasswordEditViewModel::class.java -> PasswordEditViewModel(networkRepository, databaseRepository)
         else -> throw IllegalArgumentException()
     } as T
 }

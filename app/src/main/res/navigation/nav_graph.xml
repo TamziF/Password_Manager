@@ -9,27 +9,20 @@
         android:id="@+id/passwordEditFragment"
         android:name="com.example.passwordmanager.presentation.view.passwordEdit.PasswordEditFragment"
         android:label="fragment_password_edit"
-        tools:layout="@layout/fragment_password_edit" >
+        tools:layout="@layout/fragment_password_edit">
         <action
             android:id="@+id/action_passwordEditFragment_to_passwordsListFragment"
             app:destination="@id/passwordsListFragment"
             app:popUpTo="@id/passwordsListFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/passwordsListFragment"
         android:name="com.example.passwordmanager.presentation.view.passwordsList.PasswordsListFragment"
         android:label="fragment_passwords_list"
-        tools:layout="@layout/fragment_passwords_list" >
+        tools:layout="@layout/fragment_passwords_list">
         <action
             android:id="@+id/action_passwordsListFragment_to_passwordEditFragment"
-            app:destination="@id/passwordEditFragment"/>
-            <!--app:popUpTo="@id/passwordEditFragment"
-            app:popUpToInclusive="true"-->
+            app:destination="@id/passwordEditFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/accessFragment"
-        android:name="com.example.passwordmanager.AccessFragment"
-        android:label="fragment_access"
-        tools:layout="@layout/fragment_access" />
 </navigation>
