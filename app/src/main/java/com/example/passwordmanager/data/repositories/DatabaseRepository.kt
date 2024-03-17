@@ -8,7 +8,7 @@ interface DatabaseRepositoryInterface {
 
     fun loadPasswords(): Flow<List<PasswordItem>>
 
-    suspend fun addItem(item: PasswordItem)
+    suspend fun addItem(item: PasswordItem): Int
 
     suspend fun updateItem(item: PasswordItem)
 
@@ -25,8 +25,8 @@ class DatabaseRepository(
         return dao.loadPasswords()
     }
 
-    override suspend fun addItem(item: PasswordItem) {
-        return dao.addItem(item)
+    override suspend fun addItem(item: PasswordItem): Int {
+        return dao.addItem(item).toInt()
     }
 
     override suspend fun updateItem(item: PasswordItem) {
@@ -39,5 +39,9 @@ class DatabaseRepository(
 
     override suspend fun getItem(id: Int): PasswordItem {
         return dao.getItem(id)
+    }
+
+    suspend fun getDecadeItems(decade: Int): List<PasswordItem> {
+        return dao.getDecadeItems(decade)
     }
 }

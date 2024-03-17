@@ -31,7 +31,6 @@ class PasswordEditFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
-
         fragmentComponent = PasswordEditFragmentComponent(
             viewModel = viewModel,
             fragment = this
@@ -52,8 +51,7 @@ class PasswordEditFragment : Fragment() {
 
         fragmentViewComponent = PasswordEditFragmentViewComponent(
             binding = binding,
-            fragmentComponent = fragmentComponent,
-            imageLoader = applicationComponent.imageLoader
+            fragmentComponent = fragmentComponent
         ).apply {
             viewController.bindViews()
         }

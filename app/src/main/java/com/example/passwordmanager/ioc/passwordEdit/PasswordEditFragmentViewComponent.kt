@@ -6,13 +6,11 @@ import com.example.passwordmanager.presentation.view.passwordEdit.PasswordEditFr
 
 class PasswordEditFragmentViewComponent(
     binding: FragmentPasswordEditBinding,
-    imageLoader: ImageLoader,
     fragmentComponent: PasswordEditFragmentComponent
 ) {
     val viewController = PasswordEditFragmentViewController(
         viewModel = fragmentComponent.viewModel,
         fragment = fragmentComponent.fragment,
-        binding = binding,
-        imageLoader = imageLoader
+        binding = binding
     )
 }

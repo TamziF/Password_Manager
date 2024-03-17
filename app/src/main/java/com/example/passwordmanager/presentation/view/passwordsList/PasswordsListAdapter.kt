@@ -20,6 +20,7 @@ class PasswordsListAdapter(
     }
 
     override fun onBindViewHolder(holder: PasswordItemViewHolder, position: Int) {
+        //viewModel.getNewDecadeRequest(position)
         holder.bind(getItem(position))
     }
 }

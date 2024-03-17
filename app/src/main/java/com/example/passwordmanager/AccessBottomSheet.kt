@@ -52,6 +52,22 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentAccessBinding.inflate(inflater, container, false)
+
+        if (isFirstAppEnter) {
+            firstAppEnterScenario()
+        } else {
+            bindFingerPrintIcon()
+            bindCheckMasterPasswordButton()
+        }
+
+        return binding.root
+    }
+
 
     private fun isFirstAppEnter(): Boolean {
         val masterPassword =
@@ -60,8 +76,9 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun setMasterPassword(masterPassword: String) {
+        val encryptedPassword = CryptoManager.encrypt(masterPassword)
         with(sharedPreferences.edit()) {
-            putString(getString(R.string.saved_master_password_key), masterPassword)
+            putString(getString(R.string.saved_master_password_key), encryptedPassword)
             apply()
         }
         viewModel.setAuth(true)
@@ -98,22 +115,6 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
             .setSubtitle("Log in using your biometric credential")
             .setNegativeButtonText("Use master-password")
             .build()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentAccessBinding.inflate(inflater, container, false)
-
-        if (isFirstAppEnter) {
-            firstAppEnterScenario()
-        } else {
-            bindFingerPrintIcon()
-            bindCheckMasterPasswordButton()
-        }
-
-        return binding.root
     }
 
     companion object {
@@ -164,18 +165,23 @@ class AccessBottomSheet : BottomSheetDialogFragment() {
 
     private fun bindCheckMasterPasswordButton() {
         binding.checkPasswordButton.setOnClickListener {
-            if (binding.masterPassword.text.toString() == sharedPreferences.getString(
-                    getString(R.string.saved_master_password_key),
-                    ""
-                )
+            if (binding.masterPassword.text.toString() == getMasterPassword()
             ) {
                 viewModel.setAuth(true)
-                Toast.makeText(requireContext(), "Access", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Success", Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.setAuth(false)
                 Toast.makeText(requireContext(), "Denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun getMasterPassword(): String{
+        val encryptedPassword = sharedPreferences.getString(
+            getString(R.string.saved_master_password_key),
+            ""
+        )
+        return CryptoManager.decrypt(encryptedPassword!!)
     }
 
     private fun checkBiometricSupported() {

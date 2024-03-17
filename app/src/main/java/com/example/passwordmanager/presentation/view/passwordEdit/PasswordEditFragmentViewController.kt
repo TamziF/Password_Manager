@@ -9,12 +9,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import coil.ImageLoader
 import coil.load
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.example.passwordmanager.AccessBottomSheet
-import com.example.passwordmanager.PasswordManagerApp
 import com.example.passwordmanager.R
 import com.example.passwordmanager.databinding.FragmentPasswordEditBinding
 import com.example.passwordmanager.presentation.stateholders.IconState
@@ -27,8 +23,7 @@ import kotlinx.coroutines.launch
 class PasswordEditFragmentViewController(
     private val viewModel: PasswordEditViewModel,
     private val fragment: PasswordEditFragment,
-    binding: FragmentPasswordEditBinding,
-    private val imageLoader: ImageLoader
+    binding: FragmentPasswordEditBinding
 ) {
     private val image = binding.image
     private val urlEt = binding.url
@@ -64,13 +59,13 @@ class PasswordEditFragmentViewController(
     private fun bindBottomSheetBehavior() {
         passwordEt.setEndIconOnClickListener {
             val inputType = password.inputType
+            //показан
             if (inputType == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
-                // Текущее состояние пароля - показан
                 password.inputType =
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                Log.d("previousIcon", "Close") // Вывести "close" в Log
+                Log.d("previousIcon", "Close")
             } else {
-                // Текущее состояние пароля - скрыт
+                //скрыт
                 val bottomSheet = AccessBottomSheet()
                 bottomSheet.show(fragment.parentFragmentManager, AccessBottomSheet.TAG)
                 fragment.viewLifecycleOwner.lifecycleScope.launch {
@@ -81,7 +76,7 @@ class PasswordEditFragmentViewController(
                         }
                     }
                 }
-                Log.d("previousIcon", "Show") // Вывести "show" в Log
+                Log.d("previousIcon", "Show")
             }
         }
     }
@@ -112,8 +107,8 @@ class PasswordEditFragmentViewController(
     private fun bindOldItemLoad() {
         fragment.viewLifecycleOwner.lifecycleScope.launch {
             fragment.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isNewItem.collect { isNewItem ->
-                    if (!isNewItem) {
+                viewModel.isItemSet.collect { isItemSet ->
+                    if (isItemSet) {
                         setFromViewModelState()
                         this.cancel()
                     }
@@ -134,7 +129,7 @@ class PasswordEditFragmentViewController(
 
         fragment.viewLifecycleOwner.lifecycleScope.launch {
             fragment.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.buttonsEnabled.collect { isEnabled ->
+                viewModel.deleteButtonEnabled.collect { isEnabled ->
                     deleteButton.isEnabled = isEnabled
                 }
             }
@@ -149,16 +144,16 @@ class PasswordEditFragmentViewController(
     }
 
     private fun bindSaveButton() {
-        saveButton.setOnClickListener {
-            viewModel.saveItem()
-        }
-
         fragment.viewLifecycleOwner.lifecycleScope.launch {
             fragment.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.buttonsEnabled.collect { isEnabled ->
+                viewModel.saveButtonEnabled.collect { isEnabled ->
                     saveButton.isEnabled = isEnabled
                 }
             }
+        }
+
+        saveButton.setOnClickListener {
+            viewModel.saveItem()
         }
     }
 
@@ -210,7 +205,6 @@ class PasswordEditFragmentViewController(
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 viewModel.setUrl(s.toString())
-                viewModel.loadIcon()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -237,7 +231,6 @@ class PasswordEditFragmentViewController(
 
                         IconState.ERROR -> {
                             downloadIcon()
-                            image.setImageResource(R.drawable.error_image)
                         }
                     }
                 }

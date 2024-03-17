@@ -30,10 +30,6 @@ object CryptoManager {
         load(null)
     }
 
-    private val encryptCipher = Cipher.getInstance(TRANSFORMATION).apply {
-        init(Cipher.ENCRYPT_MODE, getKey())
-    }
-
     private fun getDecryptCipherForIv(iv: ByteArray): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
             init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
@@ -71,9 +67,14 @@ object CryptoManager {
         }
         return encryptedBytes*/
 
-        val encryptedBytes = encryptCipher.doFinal(input.toByteArray(Charsets.UTF_8))
+        val cipher = Cipher.getInstance(TRANSFORMATION)
+        cipher.init(Cipher.ENCRYPT_MODE, getKey())
 
-        val iv = encryptCipher.iv
+        val encryptedBytes = cipher.doFinal(input.toByteArray(Charsets.UTF_8))
+
+        //val iv = encryptCipher.iv
+        val iv = cipher.iv
+
 
         val result = ByteArray(iv.size + encryptedBytes.size)
         System.arraycopy(iv, 0, result, 0, iv.size)

@@ -24,6 +24,10 @@ class PasswordItemViewHolder(
 
         binding.login.text = item.login
 
+        Log.d("PASSWORD_ITEM_ID", item.id.toString())
+
+
+
         binding.card.setOnClickListener {
             fragment.setFragmentResult(
                 R.string.request_key.toString(),

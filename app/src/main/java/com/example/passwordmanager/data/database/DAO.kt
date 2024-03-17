@@ -15,7 +15,7 @@ interface Dao {
     fun loadPasswords(): Flow<List<PasswordItem>>
 
     @Insert
-    suspend fun addItem(item: PasswordItem)
+    suspend fun addItem(item: PasswordItem): Long
 
     @Update
     suspend fun updateItem(item: PasswordItem)
@@ -25,4 +25,7 @@ interface Dao {
 
     @Query("SELECT * FROM Passwords WHERE id = :id")
     suspend fun getItem(id: Int): PasswordItem
+
+    @Query("SELECT * FROM passwords LIMIT (10) OFFSET (:decade * 10)")
+    suspend fun getDecadeItems(decade: Int): List<PasswordItem>
 }

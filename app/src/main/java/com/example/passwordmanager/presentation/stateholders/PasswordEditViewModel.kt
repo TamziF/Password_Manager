@@ -24,8 +24,6 @@ interface PasswordViewModelInterface {
 
     fun saveItem()
 
-    fun loadIcon()
-
     fun setUrl(url: String)
 
     fun setLogin(login: String)
@@ -50,11 +48,18 @@ class PasswordEditViewModel(
     private val _iconState: MutableStateFlow<IconState> = MutableStateFlow(IconState.ERROR)
     val iconState: StateFlow<IconState> = _iconState
 
-    private val _buttonsEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val buttonsEnabled: StateFlow<Boolean> = _buttonsEnabled
+    private val _saveButtonEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val saveButtonEnabled: StateFlow<Boolean> = _saveButtonEnabled
 
-    private val _isNewItem: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val isNewItem: StateFlow<Boolean> = _isNewItem
+    private val _deleteButtonEnabled: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val deleteButtonEnabled: StateFlow<Boolean> = _deleteButtonEnabled
+
+    private val _isItemSet: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isItemSet: StateFlow<Boolean> = _isItemSet
+
+    private var isNewItem: Boolean = true
+
+    private var hasChanged: Boolean = false
 
     private val _savingState: MutableStateFlow<SavingState> = MutableStateFlow(SavingState.DEFAULT)
     val savingState: StateFlow<SavingState> = _savingState
@@ -65,8 +70,11 @@ class PasswordEditViewModel(
     fun clearData() {
         _passwordItem.value = PasswordItem("", "", "", "")
         _iconState.value = IconState.ERROR
-        _buttonsEnabled.value = false
-        _isNewItem.value = true
+        _saveButtonEnabled.value = false
+        _deleteButtonEnabled.value = false
+        _isItemSet.value = false
+        isNewItem = true
+        hasChanged = false
         _savingState.value = SavingState.DEFAULT
         _isAuthorized.value = false
     }
@@ -80,7 +88,10 @@ class PasswordEditViewModel(
             _passwordItem.value = databaseRepository.getItem(id)
             _iconState.value = IconState.DONE
             decryptPassword()
-            _isNewItem.value = false
+            _isItemSet.value = true
+            _isItemSet.value = false
+            isNewItem = false
+            checkButtonsState()
         }
     }
 
@@ -101,7 +112,7 @@ class PasswordEditViewModel(
 
     private fun addNewItem() {
         viewModelScope.launch {
-            databaseRepository.addItem(
+            val id: Int = databaseRepository.addItem(
                 PasswordItem(
                     imageUrl = _passwordItem.value.imageUrl,
                     login = _passwordItem.value.login,
@@ -109,20 +120,25 @@ class PasswordEditViewModel(
                     url = _passwordItem.value.url
                 )
             )
+            _passwordItem.value = databaseRepository.getItem(id)
+            decryptPassword()
         }.invokeOnCompletion {
             _savingState.value = SavingState.SAVED
         }
     }
 
     override fun saveItem() {
-        _buttonsEnabled.value = false
+        _saveButtonEnabled.value = false
+        _deleteButtonEnabled.value = false
         _savingState.value = SavingState.SAVING
+        hasChanged = false
         encryptPassword()
-        if (_isNewItem.value) {
-            _isNewItem.value = false
+        if (isNewItem) {
+            isNewItem = false
             addNewItem()
         } else
             updateItem()
+        checkButtonsState()
     }
 
     private fun encryptPassword() {
@@ -135,7 +151,7 @@ class PasswordEditViewModel(
 
     private var job: Job? = null
 
-    override fun loadIcon() {
+    private fun loadIcon() {
         job?.cancel()
         _iconState.value = IconState.LOADING
         job = viewModelScope.launch {
@@ -170,22 +186,30 @@ class PasswordEditViewModel(
 
     override fun setUrl(url: String) {
         _passwordItem.value.url = url
-        checkButtonState()
+        hasChanged = true
+        loadIcon()
+        checkButtonsState()
     }
 
     override fun setLogin(login: String) {
         _passwordItem.value.login = login
-        checkButtonState()
+        hasChanged = true
+        checkButtonsState()
     }
 
     override fun setPassword(password: String) {
         _passwordItem.value.password = password
-        checkButtonState()
+        hasChanged = true
+        checkButtonsState()
     }
 
-    private fun checkButtonState() {
-        _buttonsEnabled.value = _passwordItem.value.url.isNotEmpty()
+    private fun checkButtonsState() {
+        _deleteButtonEnabled.value = _passwordItem.value.url.isNotEmpty()
                 && _passwordItem.value.login.isNotEmpty()
-                && _passwordItem.value.password.isNotEmpty()
+                && _passwordItem.value.password.isNotEmpty() && !isNewItem
+
+        _saveButtonEnabled.value = _passwordItem.value.url.isNotEmpty()
+                && _passwordItem.value.login.isNotEmpty()
+                && _passwordItem.value.password.isNotEmpty() && hasChanged
     }
 }
